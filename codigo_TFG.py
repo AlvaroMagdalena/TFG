@@ -428,10 +428,10 @@ dist4=([])
 for i in range(len(phi)):
     if 0<=phi[i]<=45 or 135<=phi[i]<=225 or 315<=phi[i]<=360:
         rmax=abs(int(np.cos(phi[i]*2*np.pi/360)*22))
-        r=np.linspace(0,rmax,7000)
+        r=np.linspace(0,rmax,100)
     elif 45<=phi[i]<=135 or 225<=phi[i]<=315:
         rmax=abs(int(np.sin(phi[i]*2*np.pi/360)*22))
-        r=np.linspace(0,rmax,7000)
+        r=np.linspace(0,rmax,100)
     X=([])
     Y=([])
     for l in range(len(r)):
@@ -442,13 +442,16 @@ for i in range(len(phi)):
     distanciatotalmont4=([])
     for j in range(len(theta)):
         alturamont=0
+        distanciamont=0
         puntoscriticos=([])
         puntoscriticosalturas=([])
+        alturas=([100000])
         for k in range(len(r)):
-            z=abs(r[k]*np.sin(theta[j]*2*np.pi/360))+matrixaux5[22,22] ##hay que sumar la elevación del centro
+            z=abs(r[k]*np.sin(theta[j]*2*np.pi/360))+matrixaux5[22,22]      ##hay que sumar la elevación del centro
+            alturas.append(z)
             if k==len(r)-1:
                 puntoscriticosalturas.append(z)    
-            elif signo(matrixaux5[22+X[k],22+Y[k]]-alturamont)!=signo(matrixaux5[22+X[k+1],22+Y[k+1]]-alturamont) :
+            elif signo(matrixaux5[22+X[k],22+Y[k]]-z)!=signo(matrixaux5[22+X[k+1],22+Y[k+1]]-alturas[k]) :
                 puntoscriticos.append(k)
                 puntoscriticosalturas.append(z)            
             alturamont=matrixaux5[22+X[k],22+Y[k]]
@@ -465,7 +468,8 @@ for i in range(len(phi)):
                     xmont=X[puntoscriticos[m+1]]-X[puntoscriticos[m]]
                     ymont=Y[puntoscriticos[m+1]]-Y[puntoscriticos[m]]
                     zmont=puntoscriticosalturas[m+1]-puntoscriticosalturas[m]
-                distanciamont=np.sqrt(xmont**2+ymont**2+zmont**2)
+                distanciamont1=np.sqrt(xmont**2+ymont**2+zmont**2)
+                distanciamont+=distanciamont1
         else:
             for l in range(len(puntoscriticosalturas)//2):
                 ####aqui voy a calcular la distancia entre los puntos criticos que van seguidos, 
@@ -474,7 +478,8 @@ for i in range(len(phi)):
                 xmont=X[puntoscriticos[m+1]]-X[puntoscriticos[m]]
                 ymont=Y[puntoscriticos[m+1]]-Y[puntoscriticos[m]]
                 zmont=puntoscriticosalturas[m+1]-puntoscriticosalturas[m]
-                distanciamont=np.sqrt(xmont**2+ymont**2+zmont**2)
+                distanciamont1=np.sqrt(xmont**2+ymont**2+zmont**2)
+                distanciamont+=distanciamont1
         distanciatotalmont4.append(distanciamont)
     dist4.append(distanciatotalmont4)
 #%%
