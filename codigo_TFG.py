@@ -75,7 +75,7 @@ for filename_with_path in list_path_file:
     b-=1
     if (b==(-1)):
         b=2
-        m+=1
+        m+=1        ##cambio fila al recorrer las columnas
 fig = plt.figure()
 plt.imshow(a, cmap="rainbow")
 plt.clim(0 ,5500)
@@ -137,10 +137,10 @@ ax3.plot_surface(X=x4,Y=y4,Z=matrixaux3,color="sandybrown")
 fig = plt.figure()
 ax4 = fig.add_subplot(projection='3d')
 #z=np.array([tile.data[0]])
-matrixaux4=np.zeros((int((len(tile.data)-1)/50),int((len(tile.data)-1)/50)))
-for i in range(3*len(tile.data)-3):
+matrixaux4=np.zeros((int((len(tile.data)-1)/50),int((len(tile.data)-1)/50))) 
+for i in range(3*len(tile.data)-3):         
     for j in range(3*len(tile.data)-3):
-        if (i+1)%150==0:
+        if (i+1)%150==0:                    
             if (j+1)%150==0:
                 matrixaux4[int(i/150),int(j/150)]=a[i,j]
 x5=np.zeros((int((len(tile.data)-1)/50),int((len(tile.data)-1)/50)))
@@ -151,7 +151,10 @@ for i in range(1,int((len(tile.data)-1)/50)):
     x5[i,:]=i      
 ax4.plot_surface(X=x5,Y=y5,Z=matrixaux4,color="sandybrown")
 #%%
+####################################
 ##CREO QUE EL MEJOR
+####################################
+
 fig = plt.figure()
 ax5 = fig.add_subplot(projection='3d')
 #z=np.array([tile.data[0]])
@@ -163,10 +166,18 @@ for i in range(3*len(tile.data)-3):
                 matrixaux5[int(i/240),int(j/240)]=a[i,j]
 x6=np.zeros((int((len(tile.data)-1)/80),int((len(tile.data)-1)/80)))
 y6=np.zeros((int((len(tile.data)-1)/80),int((len(tile.data)-1)/80)))
+
+## USAR LA SIGUIENTE PÁGINA WEB PARA CALCULAR RÁPIDO
+
+##https://es.planetcalc.com/73/
+
 for i in range(1,int((len(tile.data)-1)/80)):
     #z=np.vstack([z,tile.data.T[len(tile.data)-i]])
-    y6[:,i]=i
-    x6[i,:]=i      
+    ##PROBLEMA
+    ##He multiplicado en la línea anterior x2 para que dé como la captura de pantalla, pero no sé como conseguir ese x2
+    y6[:,i]=i*4.048178*2    ##multiplico por ese número porque tenemos 45 y la latitud total es 182.168km, 182.168/45=4.048178
+    
+    x6[i,:]=i*4.942         ##multiplico por ese número porque tenemos 45 y la longitud total es 222.390km, 222.390/45=4.942
 ax5.plot_surface(X=x6,Y=y6,Z=matrixaux5,color="sandybrown")
 #%%
 fig = plt.figure()
@@ -195,7 +206,7 @@ ax.plot_surface(X=x1,Y=y1,Z=a,color="sandybrown")
 #%%
 ##pruebas segunda parte
 ##los cuadrantes tienen un grado de longitud*un grado de latitud.
-##Un grado de longitud=111.1 km (91.17 según la calculadora https://www.tutiempo.net/calcular-distancias.html)
+##Un grado de longitud=111.1 km (91.17 según la calculadora https://www.tutiempo.net/calcular-distancias.html o si no, usar esta también https://es.planetcalc.com/73/)
 ##Un grado de latitud=40.000 km/360 grados=111.30 km
 
 ##el array tile.data contiene 9 cuadrados con 3601x3601 datos de alturas
@@ -239,7 +250,7 @@ for i in range(len(phi)):
         y=int(r[l]*np.sin(phi[i]*2*np.pi/360))
         X.append(x)
         Y.append(y)
-    xmin=0.030852540960844207*np.cos(phi[i]*2*np.pi/360)
+    xmin=0.030852540960844207*np.cos(phi[i]*2*np.pi/360)            ##esto mal
     ymin=0.030908081088586503*np.sin(phi[i]*2*np.pi/360)
     distanciamin=np.sqrt(xmin**2+ymin**2)
     distanciatotalmont=([])
@@ -254,13 +265,13 @@ for i in range(len(phi)):
                     m+=distanciamin
         distanciatotalmont.append(m)
     dist.append(distanciatotalmont)
-
+    
 #%%
 
 fig = plt.figure()
 plt.imshow(np.array(dist).T, cmap="rainbow")
 plt.ylim(0,90)
-plt.clim(0 ,0.1)
+#plt.clim(0 ,0.1)
 plt.colorbar()
 plt.show()
 
@@ -347,7 +358,7 @@ for i in range(len(phi)):
 fig = plt.figure()
 plt.imshow(np.array(dist2).T, cmap="rainbow")
 plt.ylim(0,90)
-plt.clim(0 ,0.1)
+#plt.clim(0 ,0.1)
 plt.colorbar()
 plt.show()
 
@@ -392,7 +403,86 @@ for i in range(len(phi)):
 fig = plt.figure()
 plt.imshow(np.array(dist3).T, cmap="rainbow")
 plt.ylim(0,90)
-plt.clim(0 ,0.1)
+#plt.clim(0 ,0.1)
+plt.colorbar()
+plt.show()
+
+#%%
+####################################
+##INTENTO OTRO METODO
+####################################
+
+##La idea será marcar el punto de entrada y de salida de 
+##la montaña y calcular directamente la distancia entre los dos puntos.
+
+def signo(a):
+    if a>=0:
+        b=1
+    elif a<0:
+        b=0
+    return(b)
+
+theta=np.linspace(0,90,91)
+phi=np.linspace(0,360,361)
+dist4=([])
+for i in range(len(phi)):
+    if 0<=phi[i]<=45 or 135<=phi[i]<=225 or 315<=phi[i]<=360:
+        rmax=abs(int(np.cos(phi[i]*2*np.pi/360)*22))
+        r=np.linspace(0,rmax,7000)
+    elif 45<=phi[i]<=135 or 225<=phi[i]<=315:
+        rmax=abs(int(np.sin(phi[i]*2*np.pi/360)*22))
+        r=np.linspace(0,rmax,7000)
+    X=([])
+    Y=([])
+    for l in range(len(r)):
+        x=int(r[l]*np.cos(phi[i]*2*np.pi/360))
+        y=int(r[l]*np.sin(phi[i]*2*np.pi/360))
+        X.append(x)
+        Y.append(y)
+    distanciatotalmont4=([])
+    for j in range(len(theta)):
+        alturamont=0
+        puntoscriticos=([])
+        puntoscriticosalturas=([])
+        for k in range(len(r)):
+            z=abs(r[k]*np.sin(theta[j]*2*np.pi/360))+matrixaux5[22,22] ##hay que sumar la elevación del centro
+            if k==len(r)-1:
+                puntoscriticosalturas.append(z)    
+            elif signo(matrixaux5[22+X[k],22+Y[k]]-alturamont)!=signo(matrixaux5[22+X[k+1],22+Y[k+1]]-alturamont) :
+                puntoscriticos.append(k)
+                puntoscriticosalturas.append(z)            
+            alturamont=matrixaux5[22+X[k],22+Y[k]]
+        if len(puntoscriticos)%2!=0:
+            for l in range(len(puntoscriticosalturas)//2):
+                m=l*2
+                ####aqui voy a calcular la distancia entre los puntos criticos que van seguidos, 
+                ##que serán los de entrada y salida de la montaña.                
+                if l ==len(puntoscriticosalturas)//2-1:
+                    xmont=X[len(X)-1]-X[puntoscriticos[m]]      ##ya no tengo que ponerlo respecto al centro ya que queremos la distancia relativa entre los puntos
+                    ymont=Y[len(X)-1]-Y[puntoscriticos[m]]
+                    zmont=puntoscriticosalturas[len(puntoscriticosalturas)-1]-puntoscriticosalturas[m]
+                else:    
+                    xmont=X[puntoscriticos[m+1]]-X[puntoscriticos[m]]
+                    ymont=Y[puntoscriticos[m+1]]-Y[puntoscriticos[m]]
+                    zmont=puntoscriticosalturas[m+1]-puntoscriticosalturas[m]
+                distanciamont=np.sqrt(xmont**2+ymont**2+zmont**2)
+        else:
+            for l in range(len(puntoscriticosalturas)//2):
+                ####aqui voy a calcular la distancia entre los puntos criticos que van seguidos, 
+                ##que serán los de entrada y salida de la montaña.                
+                m=l*2
+                xmont=X[puntoscriticos[m+1]]-X[puntoscriticos[m]]
+                ymont=Y[puntoscriticos[m+1]]-Y[puntoscriticos[m]]
+                zmont=puntoscriticosalturas[m+1]-puntoscriticosalturas[m]
+                distanciamont=np.sqrt(xmont**2+ymont**2+zmont**2)
+        distanciatotalmont4.append(distanciamont)
+    dist4.append(distanciatotalmont4)
+#%%
+
+fig = plt.figure()
+plt.imshow(np.array(dist4).T, cmap="rainbow")
+plt.ylim(0,90)
+#plt.clim(0 ,0.1)
 plt.colorbar()
 plt.show()
 
