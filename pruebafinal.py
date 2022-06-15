@@ -109,6 +109,36 @@ for i in range(1,int((len(tile.data)-1)/80)):
     
     x6[i,:]=i*4.942         ##multiplico por ese número porque tenemos 45 y la longitud total es 222.390km, 222.390/45=4.942
 ax5.plot_surface(X=x6,Y=y6,Z=matrixaux,color="sandybrown")
+
+#%%
+
+
+fig = plt.figure()
+ax5 = fig.add_subplot(projection='3d')
+#z=np.array([tile.data[0]])
+matrixaux=np.zeros((len(a),len(a)))
+for i in range(10,len(a)-10):
+    for j in range(10,len(a)-10):
+        matrixaux[i,j]=sum(sum(a[i-10:i+10,j-10:j+1]))/200
+matrixaux[0:9,:]=a[0:9,:]
+matrixaux[:,0:9]=a[:,0:9]
+matrixaux[10794:10803,:]=a[10794:10803,:]
+matrixaux[:,10794:10803]=a[:,10794:10803]
+x6=np.zeros((len(a),len(a)))
+y6=np.zeros((len(a),len(a)))
+
+## USAR LA SIGUIENTE PÁGINA WEB PARA CALCULAR RÁPIDO
+
+##https://es.planetcalc.com/73/
+
+for i in range(1,len(a)):
+    #z=np.vstack([z,tile.data.T[len(tile.data)-i]])
+    ##PROBLEMA
+    ##He multiplicado en la línea anterior x2 para que dé como la captura de pantalla, pero no sé como conseguir ese x2
+    y6[:,i]=i*0.0168627*2    ##multiplico por ese número porque tenemos 45 y la latitud total es 182.168km, 182.168/10803=0.0168627
+    
+    x6[i,:]=i*0.020589         ##multiplico por ese número porque tenemos 45 y la longitud total es 222.390km, 222.390/10803=0.020589
+ax5.plot_surface(X=x6,Y=y6,Z=matrixaux,color="sandybrown")
 #%%
 
 def signo(a):
@@ -119,10 +149,10 @@ def signo(a):
     return(b)
 
 theta=np.linspace(0,90,181)
-phi=np.linspace(0,360,681)
+phi=np.linspace(0,360,361)
 dist5=([])
 for i in range(len(phi)):           ##vario el angulo "polar en el plano xy"
-    r=np.linspace(0,1000,800)
+    r=np.linspace(0,12000,14000)
     X=([])
     Y=([])
     distanciatotalmont5=([])
@@ -131,37 +161,40 @@ for i in range(len(phi)):           ##vario el angulo "polar en el plano xy"
         distanciamont=0             ##inicializo la variable q guardará la cantidad de montaña en esa dirección
         puntoscriticos=([])         ##inicializo el vector q contendra la cantidad de puntos en los que salimos o entramos de la montaña en esa dirección
         puntoscriticosalturas=([])  ##inicializo el vector q contendra la cantidad de puntos en los que salimos o entramos de la montaña en esa dirección
-        alturas=([0])               ##inicializo el vector en el q guardaré las alturas de la recta
         X=([])
         Y=([])
+        XKM=([])
+        YKM=([])
         Z=([])
-        for k in range(len(r)):            
-            x=int(r[k]*np.cos(phi[i]*2*np.pi/360)*np.cos(theta[j]*2*np.pi/360))
-            y=int(r[k]*np.sin(phi[i]*2*np.pi/360)*np.cos(theta[j]*2*np.pi/360))
-            z=abs(r[k]*np.sin(theta[j]*2*np.pi/360))+matrixaux[22,22]      ##hay que sumar la elevación del centro
+        for k in range(len(r)):   
+            xkm=r[k]*np.cos(phi[i]*2*np.pi/360)*np.cos(theta[j]*2*np.pi/360)
+            ykm=r[k]*np.sin(phi[i]*2*np.pi/360)*np.cos(theta[j]*2*np.pi/360)
+            x=int(xkm/0.020589)
+            y=int(ykm/(0.0168627*2))
+            z=abs(r[k]*np.sin(theta[j]*2*np.pi/360))+matrixaux[5401,5401]      ##hay que sumar la elevación del centro
             X.append(x)                 #creo las coordenadas x e y para esa direccion en el plano xy
             Y.append(y)
+            XKM.append(xkm)
+            YKM.append(ykm)
             Z.append(z)
-            if (0<=(22+x)<=(len(matrixaux)-1) and 0<=(22+y)<=(len(matrixaux))-1):
+            if (0<=(5401+x)<=(len(matrixaux)-1) and 0<=(5401+y)<=(len(matrixaux))-1):
                 if k==0 or k==1:
                     nada=0
                 elif k==len(r)-1:
                     puntoscriticos.append(k)            ##guardamos siempre el último punto
                     puntoscriticosalturas.append(z)                 
-                elif signo(matrixaux[22+X[k],22+Y[k]]-Z[k])!=signo(matrixaux[22+X[k-1],22+Y[k-1]]-Z[k-1]) :
+                elif signo(matrixaux[5401+X[k],5401+Y[k]]-Z[k])!=signo(matrixaux[5401+X[k-1],5041+Y[k-1]]-Z[k-1]) :
                     puntoscriticos.append(k)
                     puntoscriticosalturas.append(z)            ##en el ultimo angulo guarda alturas que por la inclinación no tienen sentido
-                alturamont=matrixaux[22+X[k],22+Y[k]]
+                alturamont=matrixaux[5401+X[k],5401+Y[k]]
             else:
                     puntoscriticos.append(k-1)            ##guardamos siempre el último punto
                     puntoscriticosalturas.append(Z[k-1])
                     break
-        for l in range(len(puntoscriticos)//2):
-                ####aqui voy a calcular la distancia entre los puntos criticos que van seguidos, 
-                ##que serán los de entrada y salida de la montaña.                
+        for l in range(len(puntoscriticos)//2):               
             m=l*2
-            xmont=X[puntoscriticos[m+1]]-X[puntoscriticos[m]]
-            ymont=Y[puntoscriticos[m+1]]-Y[puntoscriticos[m]]
+            xmont=XKM[puntoscriticos[m+1]]-XKM[puntoscriticos[m]]
+            ymont=YKM[puntoscriticos[m+1]]-YKM[puntoscriticos[m]]
             zmont=Z[puntoscriticos[m+1]]-Z[puntoscriticos[m]]
             distanciamont1=np.sqrt(xmont**2+ymont**2+zmont**2)
             distanciamont+=distanciamont1
@@ -181,6 +214,6 @@ plt.imshow(dist6, extent=(0,360,0,90),cmap="rainbow")
 #plt.yticks(range(90))
 
 #plt.ylim(0,90)
-#plt.clim(0 ,0.1)
+plt.clim(0 ,0.1)
 plt.colorbar()
 plt.show()

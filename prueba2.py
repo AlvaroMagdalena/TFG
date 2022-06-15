@@ -18,34 +18,23 @@ def signo(a):
 
 matrixaux=np.zeros((450,450))
 
-matrixaux[105:110]=50
+#matrixaux[105:110]=50
 # matrixaux[6]=50
-matrixaux[130:150]=5
+#matrixaux[130:150]=5
 # matrixaux[16]=5
 # matrixaux[10]=5
 # matrixaux[11]=5
-# for i in  range(-225,225):
-#     for j in range(-225,225):
-#         if 40<=np.sqrt(i**2+j**2)<=80:
-#             matrixaux[225+i,225+j]=50
+for i in  range(-225,225):
+    for j in range(-225,225):
+        if 40<=np.sqrt(i**2+j**2)<=80:
+            matrixaux[225+i,225+j]=50
 theta=np.linspace(0,90,181)
 phi=np.linspace(0,360,361)
 dist5=([])
 for i in range(len(phi)):           ##vario el angulo "polar"
-    # if 0<=phi[i]<=45 or 135<=phi[i]<=225 or 315<=phi[i]<=360:
-    #     rmax=abs(int(np.cos(phi[i]*2*np.pi/360)*224))
-    #     r=np.linspace(0,rmax,100)
-    # elif 45<=phi[i]<=135 or 225<=phi[i]<=315:
-    #     rmax=abs(int(np.sin(phi[i]*2*np.pi/360)*224))
-    #     r=np.linspace(0,rmax,100)
     r=np.linspace(0,600,700)
     X=([])
     Y=([])
-    #for l in range(len(r)):
-        # x=int(r[l]*np.cos(phi[i]*2*np.pi/360))
-        # y=int(r[l]*np.sin(phi[i]*2*np.pi/360))
-        # X.append(x)                 #creo las coordenadas x e y para esa direccion en el plano xy
-        # Y.append(y)
     distanciatotalmont5=([])
     for j in range(len(theta)):   ##vario el angulo respecto al eje z
         alturamont=0                ##inicializo la variable q guardará la altura de la montalla
@@ -77,26 +66,7 @@ for i in range(len(phi)):           ##vario el angulo "polar"
                     puntoscriticos.append(k-1)            ##guardamos siempre el último punto
                     puntoscriticosalturas.append(Z[k-1])
                     break
-        # if len(puntoscriticos)%2!=0:
-        #     for l in range(len(puntoscriticos)//2):
-        #         m=l*2
-        #         ####aqui voy a calcular la distancia entre los puntos criticos que van seguidos, 
-        #         ##que serán los de entrada y salida de la montaña.                
-        #         # if l ==len(puntoscriticos)//2-1:
-        #         #     # xmont=X[len(X)-1]-X[puntoscriticos[m]]      ##ya no tengo que ponerlo respecto al centro ya que queremos la distancia relativa entre los puntos
-        #         #     # ymont=Y[len(X)-1]-Y[puntoscriticos[m]]
-        #         #     # zmont=puntoscriticosalturas[len(puntoscriticosalturas)-1]-puntoscriticosalturas[m]
-        #         #     frio=1
-        #         # else:    
-        #         xmont=X[puntoscriticos[m+1]]-X[puntoscriticos[m]]
-        #         ymont=Y[puntoscriticos[m+1]]-Y[puntoscriticos[m]]
-        #         zmont=Z[puntoscriticos[m+1]]-Z[puntoscriticos[m]]
-        #         distanciamont1=np.sqrt(xmont**2+ymont**2+zmont**2)
-        #         distanciamont+=distanciamont1
-        # else:
-        for l in range(len(puntoscriticos)//2):
-                ####aqui voy a calcular la distancia entre los puntos criticos que van seguidos, 
-                ##que serán los de entrada y salida de la montaña.                
+        for l in range(len(puntoscriticos)//2):               
             m=l*2
             xmont=X[puntoscriticos[m+1]]-X[puntoscriticos[m]]
             ymont=Y[puntoscriticos[m+1]]-Y[puntoscriticos[m]]
