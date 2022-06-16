@@ -112,6 +112,69 @@ ax5.plot_surface(X=x6,Y=y6,Z=matrixaux,color="sandybrown")
 
 #%%
 
+def signo(a):
+    if a>=0:
+        b=1
+    elif a<0:
+        b=0
+    return(b)
+
+theta=np.linspace(0,90,181)
+phi=np.linspace(0,360,361)
+dist5=([])
+for i in range(len(phi)):           ##vario el angulo "polar en el plano xy"
+    r=np.linspace(0,12000,14000)
+    X=([])
+    Y=([])
+    distanciatotalmont5=([])
+    for j in range(len(theta)):   ##vario el angulo respecto al eje z
+        alturamont=0                ##inicializo la variable q guardará la altura de la montalla
+        distanciamont=0             ##inicializo la variable q guardará la cantidad de montaña en esa dirección
+        puntoscriticos=([])         ##inicializo el vector q contendra la cantidad de puntos en los que salimos o entramos de la montaña en esa dirección
+        puntoscriticosalturas=([])  ##inicializo el vector q contendra la cantidad de puntos en los que salimos o entramos de la montaña en esa dirección
+        X=([])
+        Y=([])
+        XKM=([])
+        YKM=([])
+        Z=([])
+        for k in range(len(r)):   
+            xkm=r[k]*np.cos(phi[i]*2*np.pi/360)*np.cos(theta[j]*2*np.pi/360)
+            ykm=r[k]*np.sin(phi[i]*2*np.pi/360)*np.cos(theta[j]*2*np.pi/360)
+            x=int(xkm/4.942)
+            y=int(ykm/(4.048178*2))
+            z=abs(r[k]*np.sin(theta[j]*2*np.pi/360))+matrixaux[22,22]      ##hay que sumar la elevación del centro
+            X.append(x)                 #creo las coordenadas x e y para esa direccion en el plano xy
+            Y.append(y)
+            XKM.append(xkm)
+            YKM.append(ykm)
+            Z.append(z)
+            if (0<=(22+x)<=(len(matrixaux)-1) and 0<=(22+y)<=(len(matrixaux))-1):
+                if k==0 or k==1:
+                    nada=0
+                elif k==len(r)-1:
+                    puntoscriticos.append(k)            ##guardamos siempre el último punto
+                    puntoscriticosalturas.append(z)                 
+                elif signo(matrixaux[22+X[k],22+Y[k]]-Z[k])!=signo(matrixaux[22+X[k-1],22+Y[k-1]]-Z[k-1]) :
+                    puntoscriticos.append(k)
+                    puntoscriticosalturas.append(z)            ##en el ultimo angulo guarda alturas que por la inclinación no tienen sentido
+                alturamont=matrixaux[22+X[k],22+Y[k]]
+            else:
+                    puntoscriticos.append(k-1)            ##guardamos siempre el último punto
+                    puntoscriticosalturas.append(Z[k-1])
+                    break
+        for l in range(len(puntoscriticos)//2):               
+            m=l*2
+            xmont=XKM[puntoscriticos[m+1]]-XKM[puntoscriticos[m]]
+            ymont=YKM[puntoscriticos[m+1]]-YKM[puntoscriticos[m]]
+            zmont=Z[puntoscriticos[m+1]]-Z[puntoscriticos[m]]
+            distanciamont1=np.sqrt(xmont**2+ymont**2+zmont**2)
+            distanciamont+=distanciamont1
+        print(puntoscriticos)
+        distanciatotalmont5.append(distanciamont)
+    dist5.append(distanciatotalmont5)
+    
+#%%
+
 
 fig = plt.figure()
 ax5 = fig.add_subplot(projection='3d')
