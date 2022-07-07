@@ -1,4 +1,3 @@
-```
 import numpy as np
 import matplotlib.pyplot as plt
 import os 
@@ -58,7 +57,6 @@ plt.clim(0 ,5500)
 plt.colorbar()
 plt.show()
 
-```
 ###############
 ###SUAVIZADO###
 ###############
@@ -76,8 +74,6 @@ for i in range(0,10803):            # suavizamos mucho menos los puntos del exte
         asuavizado[i,10803-j]=sum(a[i,10803-j-40:10803-j+40])/80
         asuavizado[j,i]=sum(a[j-40:j+40,i])/80
         asuavizado[10803-j,i]=sum(a[10803-j-40:10803-j+40,i])/80
-
-#%%
 
 ################################################
 ###REPRESENTACIÓN 3D SUAVIZADO Y SIN SUAVIZAR###
@@ -102,8 +98,6 @@ ax.plot_surface(X=xreal,Y=yreal,Z=a,color="sandybrown")             # representa
 ax.set_xlabel('longitud (km)')
 ax.set_ylabel('latitud (km)')
 ax.set_zlabel('Altura (m)')
-
-#%%
 
 ##########################################################
 ###CÁLCULO CANTIDAD DE MONTAÑA ATRAVESADA POR DIRECCIÓN###
@@ -163,8 +157,6 @@ for i in range(len(phi)):           # vario el ángulo acimutal
     
 dist=np.array(dist)     # convertimos a array de numpy y lo rotamos
 dist=dist[:,::-1].T
-
-#%%
 
 #################################################################
 ###REPRESENTACIÓN CANTIDAD DE MONTAÑA ATRAVESADA POR DIRECCIÓN###
