@@ -1,0 +1,90 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+plt.close("all")
+
+def signo(a):
+    if a>=0:
+        b=1
+    elif a<0:
+        b=0
+    return(b)
+
+matrixaux=np.zeros((450,450))
+
+#matrixaux[105:110]=150
+#matrixaux[130:150]=50
+
+#for i in  range(-225,225):
+#    for j in range(-225,225):
+#        if 20<=np.sqrt(i**2+j**2)<=40:
+ #           matrixaux[225+i,225+j]=80
+
+for i in  range(-225,225):
+    for j in range(-225,225):
+        if 40<=np.sqrt(i**2+j**2)<=80:
+            matrixaux[225+i,225+j]=50
+            
+theta=np.linspace(0,90,181)
+phi=np.linspace(0,360,361)
+dist=([])
+rmax=int(np.sqrt(np.max(matrixaux)**2+225**2))
+for i in range(len(phi)):           
+    r=np.linspace(0,rmax,2*rmax+1)
+    distanciatotalmont=([])
+    for j in range(len(theta)):   
+        distanciamont=0             
+        puntoscriticos=([])         
+        X=([])
+        Y=([])
+        Z=([])
+        for k in range(len(r)):            
+            x=int(r[k]*np.cos(phi[i]*2*np.pi/360)*np.cos(theta[j]*2*np.pi/360))
+            y=int(r[k]*np.sin(phi[i]*2*np.pi/360)*np.cos(theta[j]*2*np.pi/360))
+            z=abs(r[k]*np.sin(theta[j]*2*np.pi/360))+matrixaux[225,225]      
+            X.append(x)                 
+            Y.append(y)
+            Z.append(z)
+            if (0<=(225+x)<=(len(matrixaux)-1) and 0<=(225+y)<=(len(matrixaux))-1):
+                if k==0 or k==1:
+                    nada=0
+                elif k==len(r)-1:
+                    puntoscriticos.append(k)            
+                elif signo(matrixaux[225+X[k],225+Y[k]]-Z[k])!=signo(matrixaux[225+X[k-1],225+Y[k-1]]-Z[k-1]) :
+                    puntoscriticos.append(k)
+            else:
+                    puntoscriticos.append(k-1)           
+                    break
+        for l in range(len(puntoscriticos)//2):               
+            m=l*2
+            xmont=X[puntoscriticos[m+1]]-X[puntoscriticos[m]]
+            ymont=Y[puntoscriticos[m+1]]-Y[puntoscriticos[m]]
+            zmont=Z[puntoscriticos[m+1]]-Z[puntoscriticos[m]]
+            distanciamont1=np.sqrt(xmont**2+ymont**2+zmont**2)
+            distanciamont+=distanciamont1
+        distanciatotalmont.append(distanciamont)
+    dist.append(distanciatotalmont)
+
+x=np.zeros((450,450))
+y=np.zeros((450,450))
+for i in range(1,450):
+    y[:,i]=i
+    x[i,:]=i
+
+fig = plt.figure()
+ax = fig.add_subplot(projection='3d')    
+ax.plot_surface(X=x,Y=y,Z=matrixaux,color="sandybrown")
+ax.set_xlabel('x (U)')
+ax.set_ylabel('y (U)')
+ax.set_zlabel('z (U)')
+
+dist=np.array(dist)
+dist=dist[:,::-1].T
+
+fig = plt.figure()
+plt.imshow(dist, extent=(0,360,0,90),cmap="rainbow")
+plt.xlabel("A($^o$)")
+plt.ylabel("h($^o$)")
+
+plt.colorbar()
+plt.show()
