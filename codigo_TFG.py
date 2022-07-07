@@ -110,7 +110,7 @@ def signo(a):   # creo la función que nos dirá si el valor es positivo (1) o n
         b=0
     return(b)
 
-theta=np.linspace(0,10,51)      # creo el ángulo de alturas entre 0 y 10 grados
+theta=np.linspace(0,3,46)      # creo el ángulo de alturas entre 0 y 10 grados
 phi=np.linspace(0,360,361)      # creo el ángulo acimutal entre 0 y 360 grados
 dist=([])                       # creo la matriz donde guardaré todas las distancias recorridas por el neutrino dentro de la montaña según su dirección
 r=np.linspace(0,350000,10000)   # creo el vector que recorrerá la recta de la trayectoria del neutrino, la distancia máxima serán 350 km
@@ -163,7 +163,7 @@ dist=dist[:,::-1].T
 #################################################################
 
 fig = plt.figure()
-plt.imshow(dist, extent=(0,360,0,100),cmap="rainbow")
+plt.imshow(dist, extent=(0,360,0,90),cmap="rainbow")
 plt.xlabel("A($^o$)")
 plt.ylabel("h($^o$)")
 plt.colorbar()
