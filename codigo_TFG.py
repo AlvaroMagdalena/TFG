@@ -163,7 +163,7 @@ dist=dist[:,::-1].T
 #################################################################
 
 fig = plt.figure()
-plt.imshow(dist, extent=(0,360,0,90),cmap="rainbow")
+plt.imshow(dist/1000, extent=(0,360,0,90),cmap="rainbow")
 plt.xlabel("A($^o$)")
 plt.ylabel("h($^o$)")
 plt.colorbar()
