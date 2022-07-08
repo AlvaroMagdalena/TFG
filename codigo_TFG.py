@@ -129,7 +129,7 @@ for i in range(len(phi)):           # vario el ángulo acimutal
             ykm=r[k]*np.sin(phi[i]*2*np.pi/360)*np.cos(theta[j]*2*np.pi/360)    # calculo la coordenada y (en km) de cada punto
             x=int(xkm/(0.022512944552*1000))
             y=int(ykm/(0.0308789*1000))
-            z=abs(r[k]*np.sin(theta[j]*2*np.pi/360))+asuavizado[6302,6352]      # calculo la altura de cada punto, hay que sumar la elevación del observatorio que es el punto de referencia
+            z=abs(r[k]*np.sin(theta[j]*2*np.pi/360))+asuavizado[6302,6352]+1    # calculo la altura de cada punto, hay que sumar la elevación del observatorio que es el punto de referencia más un metro para evitar problemas al estar a ras de suelo
             X.append(x)
             Y.append(y)
             XKM.append(xkm)
@@ -163,7 +163,7 @@ dist=dist[:,::-1].T
 #################################################################
 
 fig = plt.figure()
-plt.imshow(dist/1000, extent=(0,360,0,90),cmap="rainbow")
+plt.imshow(dist/1000, extent=(0,360,0,100),cmap="rainbow")
 plt.xlabel("A($^o$)")
 plt.ylabel("h($^o$)")
 plt.colorbar()
